@@ -1,0 +1,27 @@
+<template name="home">
+    <div class="row">
+        <div class="large-12 columns">
+            home
+        </div>
+    </div>
+    <div class="row">
+        <div class="large-12 columns">
+            <table class="stack">
+                <thead>
+                    <tr>
+                        <td>Message</td>
+                        <td>Date</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each feeds}}
+                    <tr>
+                        <td>{{shortMessage}}</td>
+                        <td>{{created_time}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</template>
