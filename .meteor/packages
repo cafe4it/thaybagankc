@@ -18,10 +18,7 @@ ecmascript              # Enable ECMAScript2015+ syntax in app code
 
 kadira:blaze-layout
 kadira:flow-router
-meteorhacks:npm
 
-
-npm-container
 meteorhacks:picker
 meteorhacks:async
 accounts-facebook
@@ -36,3 +33,4 @@ twbs:bootstrap
 fortawesome:fontawesome
 check
 ejson
+http

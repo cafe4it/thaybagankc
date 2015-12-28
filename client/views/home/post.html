@@ -1,22 +1,7 @@
 <template name="post_detail">
     <div class="row">
         <div class="col-md-12">
-        {{#if Template.subscriptionsReady}}
-            <h3>{{post.title}}</h3>
-        {{else}}
-            <h3 class="text-center">
-                <i class="fa fa-spinner fa-pulse"></i>
-            </h3>
-        {{/if}}
-        <p>
-            {{#if fb_post}}
-                <pre>
-                    {{fb_post}}
-                </pre>
-            {{else}}
-                <span><i class="fa fa-spinner fa-pulse"></i></span>
-            {{/if}}
-            </p>
+            <div class="fb-post" data-href="{{fb_postUrl}}" data-width="800"></div>
         </div>
     </div>
 </template>

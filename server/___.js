@@ -30,6 +30,32 @@ if (Meteor.isServer) {
                 throw new Meteor.Error(ex);
             }
         },
+        fb_getEmbedPost : function(postId,UA){
+            try {
+                var postTlp = _.template('https://www.facebook.com/bagankc/posts/<%=postId%>');
+                var embedTpl = _.template('https://www.facebook.com/plugins/post/oembed.json/?url=<%=postUrl%>');
+                if (postId) {
+                    var _postId = s.strRightBack(postId,'_');
+                    var postUrl = postTlp({postId : _postId}),
+                        embedUrl = embedTpl({postUrl : postUrl});
+                    var r = request.getSync(embedUrl,{
+                        headers: {
+                            'User-Agent': UA || 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:43.0) Gecko/20100101 Firefox/43.0'
+                        }
+                    });
+                    return r.body;
+                    /*var rs = Async.runSync(function(done){
+                        HTTP.get(embedUrl, function(error, result){
+                            done(error, result);
+                        });
+                    })
+                    return rs.result;*/
+                }
+            } catch (ex) {
+                console.log('Error', ex.message);
+                throw new Meteor.Error(ex);
+            }
+        },
         importPost : function(item){
             try{
                 check(item,{

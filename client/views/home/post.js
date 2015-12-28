@@ -8,6 +8,16 @@ Template.post_detail.viewmodel({
         }
     },
     fb_post : undefined,
+    fb_embedPost : undefined,
+    fb_postUrl : function(){
+        var postTlp = _.template('https://www.facebook.com/bagankc/posts/<%=postId%>');
+        return postTlp({
+            postId :  s.strRightBack(this._postId(),'_')
+        })
+    },
+    onRendered : function(){
+        FB.XFBML.parse();
+    },
     autorun : function(){
         var self = this;
         var postId = self._postId();
@@ -23,7 +33,7 @@ Template.post_detail.viewmodel({
                     var result = EJSON.parse(result);
                     self.fb_post(result.message);
                 }
-            })
+            });
         }
     }
-})
+});
