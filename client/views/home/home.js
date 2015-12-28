@@ -1,18 +1,16 @@
-Template.home.viewmodel({
-    feeds : [],
+Template.widget_top5posts.viewmodel({
+    category : function(){
+        var cats = Meteor.settings.public.categories || [];
+        var cateId = this.templateInstance.data.cateId;
+        return _.findWhere(cats, {key : cateId});
+    },
+    posts : function(){
+        return Posts.find({category : this.category().key});
+    },
     autorun : function(){
-        var self = this;
-        Meteor.call('pageFeed', 'bagankc', 50, function(error, result){
-            if(error) console.error(error);
-            var result = JSON.parse(result);
-            if(result && result.data){
-                var messages = _.map(result.data, function(i){
-                    var created_time = moment(i.created_time).format('DD/MM/YYYY HH:mm:ss');
-                    var shortMessage = s.truncate(i.message, 100);
-                    return _.extend(i, { created_time : created_time, shortMessage : shortMessage});
-                });
-                self.feeds(messages);
-            }
-        })
+        var category = this.category();
+        if(category){
+            var subs = this.templateInstance.subscribe('getPostsByCategory', category.key, 5);
+        }
     }
 })

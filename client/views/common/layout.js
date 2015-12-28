@@ -1,5 +1,6 @@
-Template.body.rendered = function(){
+/*
+Template.defaultLayout.rendered = function(){
     $(document).ready(function(){
-
+        $(document).foundation();
     })
-}
+}*/

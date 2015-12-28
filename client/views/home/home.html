@@ -1,27 +1,32 @@
 <template name="home">
     <div class="row">
-        <div class="large-12 columns">
-            home
+        <div class="col-md-6">
+            {{> widget_top5posts cateId='tam-ly-khi-cong'}}
+        </div>
+        <div class="col-md-6">
+            {{> widget_top5posts cateId='kinh-nghiem-tam-linh'}}
         </div>
     </div>
-    <div class="row">
-        <div class="large-12 columns">
-            <table class="stack">
-                <thead>
-                    <tr>
-                        <td>Message</td>
-                        <td>Date</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each feeds}}
-                    <tr>
-                        <td>{{shortMessage}}</td>
-                        <td>{{created_time}}</td>
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
+</template>
+
+<template name="widget_top5posts">
+    <div class="panel panel-default">
+        <div class="panel-heading">5 bài : <b>{{category.value}}</b> mới nhất</div>
+        <div class="panel-body">
+            <ul class="list-group">
+            {{#if Template.subscriptionsReady}}
+                {{#each posts}}
+                    <li class="list-group-item">
+                        <span class="badge visible-md-*">{{humanDate created_time}}</span>
+                        <a href="{{pathFor 'post_detail' postId=postId}}">{{title}}</a>
+                    </li>
+                {{/each}}
+            {{else}}
+                <li class="list-group-item">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                </li>
+            {{/if}}
+            </ul>
         </div>
     </div>
 </template>

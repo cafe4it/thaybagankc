@@ -31,4 +31,8 @@ manuel:viewmodel
 froatsnook:request
 momentjs:moment
 underscorestring:underscore.string
-bagankc:zf6
+arillo:flow-router-helpers
+twbs:bootstrap
+fortawesome:fontawesome
+check
+ejson

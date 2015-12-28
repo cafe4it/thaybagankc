@@ -1,6 +1,9 @@
 {
   "public": {
-
+    "categories" : [
+      {"key" : "tam-ly-khi-cong", "value" : "Tâm lý khí công"},
+      {"key" : "kinh-nghiem-tam-linh", "value" : "Kinh nghiệm tâm linh"}
+    ]
   },
   "private" : {
     "facebook" : {
@@ -8,7 +11,11 @@
       "client_secret" : "f4eddd62d28d733d7301bd60f941b705",
       "scope" : "",
       "redirect_uri" : "",
-      "token" : "CAACEdEose0cBAPjrnxK1czh9ZB1RjY6HrBZA9uNcyM7RnMuKrY2lJjP5Ad5R11uF1rLLAcxSBf5WG6u7sIbtqOZBOGU5k5RTMur39uOw54WZASeWhnBS3dphed0yyFyusBARvmirmJqBCN2YNXO23yhHABsBiUKpDBm0MzkaId2hZAn1UdLy7uNerpmZBZCpAvdmsdOQs9mZAVQQSGXW7aqi"
-    }
+      "token" : "933338480092632|k0y0zW4b3gNKXM1uyet8wDL3lr8"
+    },
+    "categories" : [
+      {"key" : "tam-ly-khi-cong", "value" : "Tâm lý khí công"},
+      {"key" : "kinh-nghiem-tam-linh", "value" : "Kinh nghiệm tâm linh"}
+    ]
   }
 }
