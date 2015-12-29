@@ -13,6 +13,7 @@ Template.posts_list.viewmodel({
     autorun : function(){
         var categoryName = this.category().key || undefined;
         var limit = this._limit();
+        document.title = this.category().value;
         if(categoryName){
             var subs = this.templateInstance.subscribe('getPostsByCategory', categoryName, limit);
             if(subs.ready()){

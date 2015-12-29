@@ -9,6 +9,7 @@ Template.widget_top5posts.viewmodel({
     },
     autorun : function(){
         var category = this.category();
+        document.title = 'Thầy Ba Gàn | Duongsinh.net';
         if(category){
             var subs = this.templateInstance.subscribe('getPostsByCategory', category.key, 5);
         }

@@ -9,7 +9,7 @@
                             {{#each posts}}
                                 <li class="list-group-item">
                                     <span class="badge visible-md-*">{{humanDate created_time}}</span>
-                                    <a href="{{pathFor 'post_detail' postId=postId}}">{{title}}</a>
+                                    <a href="{{pathFor 'post_detail' key=category.key postId=postId}}">{{title}}</a>
                                 </li>
                             {{/each}}
                         {{else}}

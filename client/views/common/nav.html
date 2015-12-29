@@ -9,15 +9,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Thầy Ba Gàn</a>
+                <a class="navbar-brand" href="{{pathFor 'home'}}">Thầy Ba Gàn</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li class="{{isActiveRoute 'home'}}"><a href="{{pathFor 'home'}}">Trang chủ <span class="sr-only">(current)</span></a></li>
-                    <li class="{{isActivePath path='/c/tam-ly-khi-cong'}}"><a href="{{pathFor 'posts_list' key='tam-ly-khi-cong'}}">Tâm lý khí công</a></li>
-                    <li class="{{isActivePath path='/c/kinh-nghiem-tam-linh'}}"><a href="{{pathFor 'posts_list' key='kinh-nghiem-tam-linh'}}">Kinh nghiệm tâm linh</a></li>
+                    <li class="{{isActivePath regex='^\\/c/tam-ly-khi-cong'}}"><a href="{{pathFor 'posts_list' key='tam-ly-khi-cong'}}">Tâm lý khí công</a></li>
+                    <li class="{{isActivePath regex='^\\/c/kinh-nghiem-tam-linh'}}"><a href="{{pathFor 'posts_list' key='kinh-nghiem-tam-linh'}}">Kinh nghiệm tâm linh</a></li>
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->

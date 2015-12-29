@@ -62,7 +62,8 @@ if (Meteor.isServer) {
                     postId : String,
                     title : String,
                     category : String,
-                    created_time : Date
+                    created_time : Date,
+                    orderNo : Number
                 });
 
                 var importedAt = new Date();

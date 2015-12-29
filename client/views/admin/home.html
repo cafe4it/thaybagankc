@@ -5,6 +5,7 @@
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
+                            <th></th>
                             <th>Bài viết</th>
                             <th>Ngày cập nhật</th>
                             <th></th>
@@ -30,6 +31,7 @@
 
 <template name="feed_item">
     <tr>
+        <td class="text-center">{{orderNo}}</td>
         <td>{{shortMessage}}</td>
         <td>{{humanDate created_time}}</td>
         <td><button class="btn btn-primary" {{b "click : addToCategory"}}><i class="fa fa-list-ul"></i> Nhập danh mục</button></td>
@@ -46,7 +48,10 @@
                 </div>
                 <div class="modal-body">
                     <p><span {{b "text : postId"}}></span></p>
-                    <p><input type="text" class="form-control" placeholder="Tiêu đề" {{b "value : title"}}></p>
+                    <p>
+                        <input type="text" class="form-control" placeholder="Tiêu đề" {{b "value : title"}}>
+                        <input type="number" class="form-control" min="1" max="999" step="1" {{b "value:orderNo, change : changeOrderNo"}}/>
+                    </p>
                     <p>
                         {{#each categories}}
                         <label class="radio-inline">

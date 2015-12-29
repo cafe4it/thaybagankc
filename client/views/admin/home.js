@@ -20,7 +20,7 @@ Template.admin_home.viewmodel({
                 if (error) console.error(error);
                 var result = EJSON.parse(result);
                 if (result && result.data) {
-                    var messages = _.each(result.data, function (i) {
+                    _.each(result.data, function (i) {
                         var shortMessage = (i.message) ? s.truncate(i.message, 100) : i.story;
                         Feeds.insert(_.extend(i, {shortMessage: shortMessage}));
                     });
@@ -29,11 +29,12 @@ Template.admin_home.viewmodel({
                         self.nextPageUrl(result.paging.next || '');
                         self.prevPageUrl(result.paging.previous || '');
                     }
+
                 }
             }catch(ex){
                 console.error('Exception : ', ex);
             }
-        })
+        });
     }
 });
 
@@ -54,12 +55,24 @@ Template.dlg_addToCategory.viewmodel({
     postId : function(){
         return this.templateInstance.data.id;
     },
+    orderNo : 0,
     title : '',
     categories : function(){
         return Meteor.settings.public.categories || [];
     },
     isValid : function(){
         return (this.postId() && this.title() && this.selectedCategory());
+    },
+    changeOrderNo : function(e){
+        var cat = _.findWhere(this.categories(),{key : this.selectedCategory()});
+        if(cat){
+            var titleTpl = _.template('<%=title%> <%=orderNo%>'),
+                title = titleTpl({
+                    title : cat.value,
+                    orderNo : this.orderNo()
+                });
+            this.title(title);
+        }
     },
     saveToDb : function(e){
         e.preventDefault();
@@ -68,11 +81,24 @@ Template.dlg_addToCategory.viewmodel({
                 postId : this.postId(),
                 title : this.title(),
                 category : this.selectedCategory(),
-                created_time : new Date(this.templateInstance.data.created_time)
+                created_time : new Date(this.templateInstance.data.created_time),
+                orderNo : parseInt(this.orderNo())
             }
             Meteor.call('importPost', item, function(error, result){
                 console.log(error, result);
             })
+        }
+    },
+    autorun : function(){
+        var postId = this.postId();
+        var subs = this.templateInstance.subscribe('getPostById', postId);
+        if(subs.ready()){
+            var post = Posts.findOne({postId : postId});
+            if(post){
+                this.orderNo(post.orderNo);
+                this.selectedCategory(post.category);
+                this.title(post.title);
+            }
         }
     }
 })
