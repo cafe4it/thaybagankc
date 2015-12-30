@@ -81,8 +81,7 @@ Template.dlg_addToCategory.viewmodel({
                 postId : this.postId(),
                 title : this.title(),
                 category : this.selectedCategory(),
-                created_time : new Date(this.templateInstance.data.created_time),
-                orderNo : parseInt(this.orderNo())
+                created_time : new Date(this.templateInstance.data.created_time)
             }
             Meteor.call('importPost', item, function(error, result){
                 console.log(error, result);
@@ -95,7 +94,6 @@ Template.dlg_addToCategory.viewmodel({
         if(subs.ready()){
             var post = Posts.findOne({postId : postId});
             if(post){
-                this.orderNo(post.orderNo);
                 this.selectedCategory(post.category);
                 this.title(post.title);
             }

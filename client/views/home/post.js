@@ -3,10 +3,10 @@ Template.post_detail.viewmodel({
         return FlowRouter.getParam('postId');
     },
     previousUrl: function () {
-        return buildPageUrl(this.post(), 1);
+        return buildPageUrl(this.post(), 'lt');
     },
     nextUrl: function () {
-        return buildPageUrl(this.post(), -1);
+        return buildPageUrl(this.post(), 'gt');
     },
     post: function () {
         if (this._postId()) {
@@ -43,13 +43,16 @@ Template.post_detail.viewmodel({
     }
 });
 
-function buildPageUrl(currentPost, step) {
+function buildPageUrl(currentPost, jjj) {
     var url = null;
     if (currentPost) {
-        var currNo = currentPost.orderNo,
+        var currCreated_time = currentPost.created_time,
             cat = currentPost.category,
-            preNo = currNo - (step);
-        var _Post = Posts.findOne({orderNo: preNo, category: cat});
+            param = (jjj === 'lt') ? {
+                created_time: {$lt: currCreated_time},
+                category: cat
+            } : {created_time: {$gt: currCreated_time}, category: cat};
+        var _Post = Posts.findOne(param);
         if (_Post) {
             url = FlowRouter.path('post_detail', {key: _Post.category, postId: _Post.postId});
         }

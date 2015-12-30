@@ -14,9 +14,9 @@ if (Meteor.isServer) {
 
     Meteor.publish('getPost', function (postId) {
         var current = Posts.findOne({postId: postId}),
-            _No = parseInt(current.orderNo),
-            cat = current.category;
-        var arr = [_No - 1, _No, _No + 1];
-        return Posts.find({category : cat, orderNo : {$in : arr}});
+            previous = Posts.findOne({created_time : {$lt : current.created_time}, category : current.category},{sort : {created_time:-1}}),
+            next = Posts.findOne({created_time : {$gt : current.created_time}, category : current.category},{sort : {created_time:1}}),
+            arr = [(previous) ? previous._id : '', current._id, (next) ? next._id : ''];
+        return Posts.find({_id : {$in : arr}});
     })
 }
