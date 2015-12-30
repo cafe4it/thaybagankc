@@ -7,5 +7,5 @@ Template.registerHelper('isDesktopOrTablet', function(){
 });
 
 Template.registerHelper('convertToHtml',function(str){
-    return str.replace(/(?:\r\n|\r|\n)/g, '<br />');
+    return (str) ? str.replace(/(?:\r\n|\r|\n)/g, '<br />') : str;
 })

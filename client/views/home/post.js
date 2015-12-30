@@ -21,6 +21,23 @@ Template.post_detail.viewmodel({
             postId: s.strRightBack(this._postId(), '_')
         })
     },
+    onRendered : function(){
+        if(is.desktop() || is.tablet()){
+            $(document).ready(function(){
+                $(window).bind('scroll', function() {
+                    var navHeight = 50; // custom nav height
+                    if($(window).scrollTop() > navHeight){
+                        $('#nav_post').addClass('goToBottom');
+                        //$('#nav_post > div').addClass('goToBottom');
+                    }else{
+                        $('#nav_post').removeClass('goToBottom');
+                        //$('#nav_post > div').removeClass('goToBottom');
+                    }
+                    //($(window).scrollTop() > navHeight) ? $('#nav_post').addClass('goToBottom') : $('#nav_post').removeClass('goToBottom');
+                });
+            })
+        }
+    },
     autorun: function () {
         var self = this;
         var postId = self._postId();
@@ -40,7 +57,7 @@ Template.post_detail.viewmodel({
                     }
                 });
             }*/
-
+            self.fb_postContent(undefined);
             Meteor.call('fb_fetchPost', postId , navigator.userAgent, function (error, result) {
                 if (error) console.error(error);
                 if (result) {

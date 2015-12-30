@@ -1,5 +1,5 @@
 <template name="post_detail">
-<!--    {{#if isDesktopOrTablet}}
+    <!--    {{#if isDesktopOrTablet}}
 
     <div class="row">
         <div class="col-md-2 text-center">
@@ -53,29 +53,44 @@
     {{/if}}-->
     {{#if fb_postContent}}
         <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-2 text-center">
-                <a class="btn btn-default" href="{{previousUrl}}" {{b "if:previousUrl"}}>
-                    <i class="fa fa-arrow-left fa-5"></i>
-                </a>
-                <a class="btn btn-default hidden-md hidden-lg" href="{{nextUrl}}" {{b "if:nextUrl"}}>
-                    <i class="fa fa-arrow-right fa-5"></i>
-                </a>
+            <div class="col-xs-12 col-sm-12 text-center hidden-md hidden-lg">
+                <p>
+                    <a class="btn btn-primary" href="{{previousUrl}}" {{b "if:previousUrl"}}>
+                        <i class="fa fa-arrow-left fa-5"></i>
+                    </a>
+                    <a class="btn btn-primary" href="{{nextUrl}}" {{b "if:nextUrl"}}>
+                        <i class="fa fa-arrow-right fa-5"></i>
+                    </a>
+                </p>
             </div>
-            <div class="col-xs-12 col-sm-12 col-md-8">
+            <div class="col-xs-12 col-sm-12 col-md-offset-2 col-md-8 col-lg-8 col-lg-offset-2">
+                <p class="hidden-xs hidden-sm text-center" id="nav_post">
+                    <a class="btn btn-primary" href="{{previousUrl}}" {{b "if:previousUrl"}}>
+                        <i class="fa fa-arrow-left fa-5"></i>
+                    </a>
+                    <a class="btn btn-primary" href="{{nextUrl}}" {{b "if:nextUrl"}}>
+                        <i class="fa fa-arrow-right fa-5"></i>
+                    </a>
+                </p>
+
                 <div class="well text-left">
                     {{{convertToHtml fb_postContent.message}}}
                     <p style="background-color: black">
-                        <a href="{{fb_postUrl}}" target="_blank"><img src="{{fb_postContent.full_picture}}" class="img-responsive img-center" alt="" style="max-height:491px;"/></a>
+                        <a href="{{fb_postUrl}}" target="_blank"><img src="{{fb_postContent.full_picture}}"
+                                                                      class="img-responsive img-center" alt=""
+                                                                      style="max-height:491px;"/></a>
                     </p>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-12 col-md-2 text-center">
-                <a class="btn btn-default hidden-md hidden-lg" href="{{previousUrl}}" {{b "if:previousUrl"}}>
-                    <i class="fa fa-arrow-left fa-5"></i>
-                </a>
-                <a class="btn btn-default" href="{{nextUrl}}" {{b "if:nextUrl"}}>
-                    <i class="fa fa-arrow-right fa-5"></i>
-                </a>
+            <div class="col-xs-12 col-sm-12 text-center hidden-md hidden-lg">
+                <p>
+                    <a class="btn btn-primary" href="{{previousUrl}}" {{b "if:previousUrl"}}>
+                        <i class="fa fa-arrow-left fa-5"></i>
+                    </a>
+                    <a class="btn btn-primary" href="{{nextUrl}}" {{b "if:nextUrl"}}>
+                        <i class="fa fa-arrow-right fa-5"></i>
+                    </a>
+                </p>
             </div>
         </div>
     {{else}}
