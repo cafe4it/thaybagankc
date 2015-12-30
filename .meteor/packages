@@ -35,3 +35,6 @@ check
 ejson
 http
 hb5:meteor-is.js
+nxcong:x-ray
+nxcong:cheerio
+meteorhacks:fast-render

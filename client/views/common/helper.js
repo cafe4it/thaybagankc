@@ -2,6 +2,10 @@ Template.registerHelper('humanDate',function(date){
     return (date) ? moment(date).format('DD/MM/YYYY HH:mm:ss') : '';
 });
 
-Template.registerHelper('isDesktop', function(){
-    return is.desktop();
+Template.registerHelper('isDesktopOrTablet', function(){
+    return is.desktop() || is.tablet();
 });
+
+Template.registerHelper('convertToHtml',function(str){
+    return str.replace(/(?:\r\n|\r|\n)/g, '<br />');
+})

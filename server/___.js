@@ -15,13 +15,13 @@ if (Meteor.isServer) {
                 throw new Meteor.Error(ex);
             }
         },
-        fb_getPost : function(postId){
+        fb_getPost: function (postId) {
             try {
                 var facebookSettings = Meteor.settings.private.facebook;
                 var graphTpl = _.template('https://graph.facebook.com/v2.5/<%=postId%>?access_token=<%=token%>');
                 if (facebookSettings && postId) {
                     var token = facebookSettings.token;
-                    var graphUrl = graphTpl({postId : postId,token: encodeURI(token)});
+                    var graphUrl = graphTpl({postId: postId, token: encodeURI(token)});
                     var r = request.getSync(graphUrl, {encoding: 'utf8'});
                     return r.body;
                 }
@@ -30,45 +30,74 @@ if (Meteor.isServer) {
                 throw new Meteor.Error(ex);
             }
         },
-        fb_getEmbedPost : function(postId,UA){
+        fb_getEmbedPost: function (postId, UA) {
             try {
                 var postTlp = _.template('https://www.facebook.com/bagankc/posts/<%=postId%>');
                 var embedTpl = _.template('https://www.facebook.com/plugins/post/oembed.json/?url=<%=postUrl%>');
                 if (postId) {
-                    var _postId = s.strRightBack(postId,'_');
-                    var postUrl = postTlp({postId : _postId}),
-                        embedUrl = embedTpl({postUrl : postUrl});
-                    var r = request.getSync(embedUrl,{
+                    var _postId = s.strRightBack(postId, '_');
+                    var postUrl = postTlp({postId: _postId}),
+                        embedUrl = embedTpl({postUrl: postUrl});
+                    var r = request.getSync(embedUrl, {
                         headers: {
                             'User-Agent': UA || 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:43.0) Gecko/20100101 Firefox/43.0'
                         }
                     });
-                    return r.body;
-                    /*var rs = Async.runSync(function(done){
-                        HTTP.get(embedUrl, function(error, result){
-                            done(error, result);
+                    var result = EJSON.parse(r.body);
+                    if (result && result.html) {
+                        console.log(result.html);
+                        var rs = Async.runSync(function (done) {
+                            var x = Xray();
+                            x(result.html, 'body', {
+                                image: 'img.img@src'
+                            })(function (error, data) {
+                                done(error, data);
+                            })
                         });
-                    })
-                    return rs.result;*/
+
+                        if (rs.error) throw new Meteor.Error(rs.error);
+                        if (rs.result) return rs.result;
+                    }
                 }
             } catch (ex) {
                 console.log('Error', ex.message);
                 throw new Meteor.Error(ex);
             }
         },
-        importPost : function(item){
-            try{
-                check(item,{
-                    postId : String,
-                    title : String,
-                    category : String,
-                    created_time : Date
+        fb_fetchPost: function (postId, UA) {
+            try {
+                var postTlp = _.template('https://graph.facebook.com/v2.5/<%=postId%>?fields=picture%2Cfull_picture%2Cmessage%2Ccomments&access_token=<%=token%>');
+                var facebookSettings = Meteor.settings.private.facebook;
+                if(facebookSettings && postId){
+                    var token = facebookSettings.token;
+                    var postUrl = postTlp({postId : postId, token : token});
+                    var r = request.getSync(postUrl,{
+                        headers: {
+                            'User-Agent': UA || 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:43.0) Gecko/20100101 Firefox/43.0'
+                        },
+                        encoding: 'utf8'
+                    });
+                    var result = EJSON.parse(r.body);
+                    return result;
+                }
+            } catch (ex) {
+                console.log('Error', ex.message);
+                throw new Meteor.Error(ex);
+            }
+        },
+        importPost: function (item) {
+            try {
+                check(item, {
+                    postId: String,
+                    title: String,
+                    category: String,
+                    created_time: Date
                 });
 
                 var importedAt = new Date();
-                Posts.upsert({postId : item.postId}, _.extend(item, {importedAt : importedAt}));
+                Posts.upsert({postId: item.postId}, _.extend(item, {importedAt: importedAt}));
                 return true;
-            }catch(ex){
+            } catch (ex) {
                 console.log('Error', ex.message);
                 throw new Meteor.Error(ex);
             }
