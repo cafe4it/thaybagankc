@@ -15,6 +15,7 @@ Template.post_detail.viewmodel({
     },
     fb_post: undefined,
     fb_postContent : undefined,
+    fb_postComments : undefined,
     fb_postUrl: function () {
         var postTlp = _.template('https://www.facebook.com/bagankc/posts/<%=postId%>');
         return postTlp({
@@ -46,28 +47,31 @@ Template.post_detail.viewmodel({
             if (subs.ready()) {
                 var title = self.post().title;
                 document.title = title + ' | Thầy Ba Gàn | duongsinh.net';
-                //FB.XFBML.parse();
             }
-            /*if (!is.desktop()) {
-                Meteor.call('fb_getPost', postId, function (error, result) {
-                    if (error) console.error(error);
-                    if (result) {
-                        var result = EJSON.parse(result);
-                        self.fb_post(result.message);
-                    }
-                });
-            }*/
+
             self.fb_postContent(undefined);
+            self.fb_postComments(undefined);
             Meteor.call('fb_fetchPost', postId , navigator.userAgent, function (error, result) {
                 if (error) console.error(error);
                 if (result) {
                     console.info(result);
-                    self.fb_postContent(result);
+                    self.fb_postContent(result.post);
+                    self.fb_postComments(result.comments);
                 }
             });
         }
     }
 });
+
+Template.post_comments.viewmodel({
+    comments : function(){
+        var obj = this.templateInstance.data;
+        return {
+            count : (obj.summary.total_count) ? obj.summary.total_count : null,
+            items : obj.data
+        }
+    }
+})
 
 function buildPageUrl(currentPost, jjj) {
     var url = null;

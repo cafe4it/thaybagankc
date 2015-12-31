@@ -34,3 +34,11 @@
         margin-bottom: 55px !important;
     }
 }
+
+.comment_item{
+    margin-bottom: 5px !important;
+}
+
+.comment_item_date{
+    color: #eeeeee;
+}

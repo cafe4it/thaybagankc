@@ -1,95 +1,26 @@
 <template name="post_detail">
-    <!--    {{#if isDesktopOrTablet}}
-
-    <div class="row">
-        <div class="col-md-2 text-center">
-            <a class="btn btn-default" href="{{previousUrl}}" {{b "if:previousUrl"}}>
-                <i class="fa fa-arrow-left fa-5"></i>
-            </a>
-        </div>
-        <div class="col-md-8 text-center">
-            <div class="fb-post" data-href="{{fb_postUrl}}" data-width="800"></div>
-        </div>
-        <div class="col-md-2 text-center">
-            <a class="btn btn-default" href="{{nextUrl}}" {{b "if:nextUrl"}}>
-                <i class="fa fa-arrow-right fa-5"></i>
-            </a>
-        </div>
-    </div>
-    {{else}}
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="text-center">
-                <a class="btn btn-default" href="{{previousUrl}}" {{b "if:previousUrl"}}>
-                    <i class="fa fa-arrow-left fa-5"></i>
-                </a>
-
-                <a class="btn btn-default" href="{{nextUrl}}" {{b "if:nextUrl"}}>
-                    <i class="fa fa-arrow-right fa-5"></i>
-                </a>
-            </div>
-        </div>
-        <div class="col-sx-12">
-            {{#if fb_post}}
-                <textarea style="color: black" cols="30" rows="40" disabled class="form-control">{{fb_post}}</textarea>
-            {{else}}
-                <div class="text-center">
-                    <i class="fa fa-spinner fa-pulse"></i>
-                </div>
-            {{/if}}
-        </div>
-        <div class="col-xs-12">
-            <div class="text-center">
-                <a class="btn btn-default" href="{{previousUrl}}" {{b "if:previousUrl"}}>
-                    <i class="fa fa-arrow-left fa-5"></i>
-                </a>
-
-                <a class="btn btn-default" href="{{nextUrl}}" {{b "if:nextUrl"}}>
-                    <i class="fa fa-arrow-right fa-5"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-    {{/if}}-->
     {{#if fb_postContent}}
         <div class="row">
-            <div class="col-xs-12 col-sm-12 text-center hidden-md hidden-lg">
-                <p>
-                    <a class="btn btn-primary" href="{{previousUrl}}" {{b "if:previousUrl"}}>
-                        <i class="fa fa-arrow-left fa-5"></i>
-                    </a>
-                    <a class="btn btn-primary" href="{{nextUrl}}" {{b "if:nextUrl"}}>
-                        <i class="fa fa-arrow-right fa-5"></i>
-                    </a>
-                </p>
-            </div>
             <div class="col-xs-12 col-sm-12 col-md-offset-2 col-md-8 col-lg-8 col-lg-offset-2">
-                <p class="hidden-xs hidden-sm text-center" id="nav_post">
-                    <a class="btn btn-primary" href="{{previousUrl}}" {{b "if:previousUrl"}}>
-                        <i class="fa fa-arrow-left fa-5"></i>
-                    </a>
-                    <a class="btn btn-primary" href="{{nextUrl}}" {{b "if:nextUrl"}}>
-                        <i class="fa fa-arrow-right fa-5"></i>
-                    </a>
+                <p class="text-center hidden-xs hidden-sm" id="nav_post">
+                    {{> nav_control}}
                 </p>
-
+                <p class="text-center hidden-md hidden-lg">
+                    {{> nav_control}}
+                </p>
                 <div class="well text-left">
                     {{{convertToHtml fb_postContent.message}}}
                     <p style="background-color: black">
-                        <a href="{{fb_postUrl}}" target="_blank"><img src="{{fb_postContent.full_picture}}"
-                                                                      class="img-responsive img-center" alt=""
-                                                                      style="max-height:491px;"/></a>
+                        <a href="{{fb_postUrl}}" target="_blank">
+                            <img src="{{fb_postContent.full_picture}}" class="img-responsive img-center" alt="" style="max-height:491px;"/>
+                        </a>
                     </p>
                 </div>
-            </div>
-            <div class="col-xs-12 col-sm-12 text-center hidden-md hidden-lg">
-                <p>
-                    <a class="btn btn-primary" href="{{previousUrl}}" {{b "if:previousUrl"}}>
-                        <i class="fa fa-arrow-left fa-5"></i>
-                    </a>
-                    <a class="btn btn-primary" href="{{nextUrl}}" {{b "if:nextUrl"}}>
-                        <i class="fa fa-arrow-right fa-5"></i>
-                    </a>
+                {{#with fb_postComments}}
+                    {{> post_comments}}
+                {{/with}}
+                <p class="text-center hidden-md hidden-lg">
+                    {{> nav_control}}
                 </p>
             </div>
         </div>
@@ -102,4 +33,45 @@
             </div>
         </div>
     {{/if}}
+</template>
+
+<template name="nav_control">
+    <a class="btn btn-primary" {{b "enable:parent.previousUrl,attr:{href : parent.previousUrl}"}}>
+        <i class="fa fa-arrow-left fa-5"></i>
+    </a>
+    <a class="btn btn-primary" {{b "enable:parent.nextUrl, attr :{href : parent.nextUrl}"}}>
+        <i class="fa fa-arrow-right fa-5"></i>
+    </a>
+</template>
+
+<template name="post_comments">
+    <div class="panel panel-default" {{b "if:comments.count"}}>
+        <div class="panel-heading">
+            <i class="fa fa-comments-o"></i>
+            Bình luận
+            <span {{b "if :comments.count, text : '(' + comments.count + ')' "}}></span>
+        </div>
+        <div class="panel-body" style="padding: 5px !important;">
+            <div class="">
+                <table class="table table-hover">
+                    <tbody>
+                    {{#each comments.items}}
+                        {{> post_comment_item}}
+                    {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template name="post_comment_item">
+    <tr>
+        <td style="padding: 5px !important;">
+            <p class="comment_item">
+                <b {{b "text : this.from.name"}}></b> &nbsp; <span class="label label-default pull-right">{{humanDate this.created_time}}</span>
+            </p>
+            <p class="comment_item" {{b "text : this.message"}}></p>
+        </td>
+    </tr>
 </template>

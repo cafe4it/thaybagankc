@@ -66,7 +66,7 @@ if (Meteor.isServer) {
         },
         fb_fetchPost: function (postId, UA) {
             try {
-                var postTlp = _.template('https://graph.facebook.com/v2.5/<%=postId%>?fields=picture%2Cfull_picture%2Cmessage%2Ccomments&access_token=<%=token%>');
+                var postTlp = _.template('https://graph.facebook.com/v2.5/<%=postId%>?fields=picture%2Cfull_picture%2Cmessage&access_token=<%=token%>');
                 var facebookSettings = Meteor.settings.private.facebook;
                 if(facebookSettings && postId){
                     var token = facebookSettings.token;
@@ -77,8 +77,22 @@ if (Meteor.isServer) {
                         },
                         encoding: 'utf8'
                     });
-                    var result = EJSON.parse(r.body);
-                    return result;
+                    var result = JSON.parse(r.body);
+                    var fbPost = {
+                        post : result
+                    }
+
+                    var commentsInfoTpl = _.template('https://graph.facebook.com/v2.5/<%=postId%>/comments?access_token=<%=token%>&summary=1&filter=stream&order=reverse_chronological'),
+                        commentsInfoUrl = commentsInfoTpl({token : token, postId : postId});
+                    r = request.getSync(commentsInfoUrl,{
+                        headers: {
+                            'User-Agent': UA || 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:43.0) Gecko/20100101 Firefox/43.0'
+                        },
+                        encoding: 'utf8'
+                    });
+
+                    result = JSON.parse(r.body);
+                    return _.extend(fbPost,{ comments : result});
                 }
             } catch (ex) {
                 console.log('Error', ex.message);
