@@ -82,7 +82,7 @@ if (Meteor.isServer) {
                         post : result
                     }
 
-                    var commentsInfoTpl = _.template('https://graph.facebook.com/v2.5/<%=postId%>/comments?access_token=<%=token%>&summary=1&filter=stream&order=reverse_chronological'),
+                    var commentsInfoTpl = _.template('https://graph.facebook.com/v2.5/<%=postId%>/comments?access_token=<%=token%>&fields=parent,from,message&summary=1&filter=stream&order=reverse_chronological'),
                         commentsInfoUrl = commentsInfoTpl({token : token, postId : postId});
                     r = request.getSync(commentsInfoUrl,{
                         headers: {

@@ -39,6 +39,12 @@ Template.post_detail.viewmodel({
             })
         }
     },
+    control : function(){
+        return {
+            previousUrl : this.previousUrl(),
+            nextUrl : this.previousUrl()
+        }
+    },
     autorun: function () {
         var self = this;
         var postId = self._postId();
@@ -54,7 +60,7 @@ Template.post_detail.viewmodel({
             Meteor.call('fb_fetchPost', postId , navigator.userAgent, function (error, result) {
                 if (error) console.error(error);
                 if (result) {
-                    console.info(result);
+                    //console.info(result);
                     self.fb_postContent(result.post);
                     self.fb_postComments(result.comments);
                 }
@@ -63,12 +69,36 @@ Template.post_detail.viewmodel({
     }
 });
 
+/*Template.nav_control.viewmodel({
+    onCreated : function(){
+        console.log(this.data())
+    }
+})*/
+
 Template.post_comments.viewmodel({
+    onRendered : function(){
+        $(document).ready(function(){
+            $("#tbl_comments").treetable();
+        })
+    },
     comments : function(){
         var obj = this.templateInstance.data;
+        var _comments = new Mongo.Collection(null);
+        _.each(obj.data, function(i){
+            var parent_id = (i.parent) ? i.parent.id : null;
+            _comments.insert({
+                id : i.id,
+                parentId : parent_id,
+                name : i.from.name,
+                message : i.message,
+                created_time : i.created_time
+            });
+        })
+        var items = _comments.find({},{sort : {created_time : 1}}).fetch();
+        console.warn(builddata(items));
         return {
             count : (obj.summary.total_count) ? obj.summary.total_count : null,
-            items : obj.data
+            items : items
         }
     }
 })
@@ -88,4 +118,30 @@ function buildPageUrl(currentPost, jjj) {
         }
     }
     return url;
+}
+
+var builddata = function (data) {
+    var source = [];
+    var items = [];
+    // build hierarchical source.
+    for (i = 0; i < data.length; i++) {
+        var item = data[i];
+        var label = item["message"];
+        var parentid = item["parentId"];
+        var id = item["id"];
+
+        if (items[parentid]) {
+            var item = { parentId: parentid, message: label, item: item };
+            if (!items[parentid].items) {
+                items[parentid].items = [];
+            }
+            items[parentid].items[items[parentid].items.length] = item;
+            items[id] = item;
+        }
+        else {
+            items[id] = { parentId: parentid, message: label, item: item };
+            source[id] = items[id];
+        }
+    }
+    return source;
 }

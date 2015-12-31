@@ -3,10 +3,10 @@
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-offset-2 col-md-8 col-lg-8 col-lg-offset-2">
                 <p class="text-center hidden-xs hidden-sm" id="nav_post">
-                    {{> nav_control}}
+                    {{> nav_control control}}
                 </p>
                 <p class="text-center hidden-md hidden-lg">
-                    {{> nav_control}}
+                    {{> nav_control control}}
                 </p>
                 <div class="well text-left">
                     {{{convertToHtml fb_postContent.message}}}
@@ -20,7 +20,7 @@
                     {{> post_comments}}
                 {{/with}}
                 <p class="text-center hidden-md hidden-lg">
-                    {{> nav_control}}
+                    {{> nav_control control}}
                 </p>
             </div>
         </div>
@@ -36,10 +36,10 @@
 </template>
 
 <template name="nav_control">
-    <a class="btn btn-primary" {{b "enable:parent.previousUrl,attr:{href : parent.previousUrl}"}}>
+    <a class="btn btn-primary" {{b "enable:data.previousUrl,attr:{href : data.previousUrl}"}}>
         <i class="fa fa-arrow-left fa-5"></i>
     </a>
-    <a class="btn btn-primary" {{b "enable:parent.nextUrl, attr :{href : parent.nextUrl}"}}>
+    <a class="btn btn-primary" {{b "enable:data.nextUrl, attr :{href : data.nextUrl}"}}>
         <i class="fa fa-arrow-right fa-5"></i>
     </a>
 </template>
@@ -53,7 +53,7 @@
         </div>
         <div class="panel-body" style="padding: 5px !important;">
             <div class="">
-                <table class="table table-hover">
+                <table class="table table-hover" id="tbl_comments">
                     <tbody>
                     {{#each comments.items}}
                         {{> post_comment_item}}
@@ -66,12 +66,12 @@
 </template>
 
 <template name="post_comment_item">
-    <tr>
+    <tr {{b "attr : {data-tt-id : this.id, data-tt-parent-id : this.parentId}"}}>
         <td style="padding: 5px !important;">
             <p class="comment_item">
-                <b {{b "text : this.from.name"}}></b> &nbsp; <span class="label label-default pull-right">{{humanDate this.created_time}}</span>
+                <b {{b "text : this.name"}}></b> &nbsp; <span class="label label-default pull-right">{{humanDate this.created_time}}</span>
             </p>
-            <p class="comment_item" {{b "text : this.message"}}></p>
+            <p class="comment_item">{{{convertToHtml this.message}}}</p>
         </td>
     </tr>
 </template>
