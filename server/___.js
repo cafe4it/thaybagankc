@@ -82,8 +82,9 @@ if (Meteor.isServer) {
                         post : result
                     }
 
-                    var commentsInfoTpl = _.template('https://graph.facebook.com/v2.5/<%=postId%>/comments?access_token=<%=token%>&fields=parent,from,message&summary=1&filter=stream&order=reverse_chronological'),
+                    var commentsInfoTpl = _.template('https://graph.facebook.com/v2.5/<%=postId%>/comments?access_token=<%=token%>&fields=parent,created_time,from,message&summary=1&filter=stream&order=reverse_chronological'),
                         commentsInfoUrl = commentsInfoTpl({token : token, postId : postId});
+                    //console.log(commentsInfoUrl);
                     r = request.getSync(commentsInfoUrl,{
                         headers: {
                             'User-Agent': UA || 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:43.0) Gecko/20100101 Firefox/43.0'

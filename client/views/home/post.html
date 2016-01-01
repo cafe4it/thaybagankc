@@ -52,21 +52,13 @@
             <span {{b "if :comments.count, text : '(' + comments.count + ')' "}}></span>
         </div>
         <div class="panel-body" style="padding: 5px !important;">
-            <div class="">
-                <table class="table table-hover" id="tbl_comments">
-                    <tbody>
-                    {{#each comments.items}}
-                        {{> post_comment_item}}
-                    {{/each}}
-                    </tbody>
-                </table>
-            </div>
+            {{{comments.items}}}
         </div>
     </div>
 </template>
 
 <template name="post_comment_item">
-    <tr {{b "attr : {data-tt-id : this.id, data-tt-parent-id : this.parentId}"}}>
+    <tr>
         <td style="padding: 5px !important;">
             <p class="comment_item">
                 <b {{b "text : this.name"}}></b> &nbsp; <span class="label label-default pull-right">{{humanDate this.created_time}}</span>

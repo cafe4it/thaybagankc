@@ -42,3 +42,7 @@
 .comment_item_date{
     color: #eeeeee;
 }
+
+table.subTable tr{
+    border-left: solid gray 5px;
+}

@@ -14,23 +14,23 @@ Template.post_detail.viewmodel({
         }
     },
     fb_post: undefined,
-    fb_postContent : undefined,
-    fb_postComments : undefined,
+    fb_postContent: undefined,
+    fb_postComments: undefined,
     fb_postUrl: function () {
         var postTlp = _.template('https://www.facebook.com/bagankc/posts/<%=postId%>');
         return postTlp({
             postId: s.strRightBack(this._postId(), '_')
         })
     },
-    onRendered : function(){
-        if(is.desktop() || is.tablet()){
-            $(document).ready(function(){
-                $(window).bind('scroll', function() {
+    onRendered: function () {
+        if (is.desktop() || is.tablet()) {
+            $(document).ready(function () {
+                $(window).bind('scroll', function () {
                     var navHeight = 50; // custom nav height
-                    if($(window).scrollTop() > navHeight){
+                    if ($(window).scrollTop() > navHeight) {
                         $('#nav_post').addClass('goToBottom');
                         //$('#nav_post > div').addClass('goToBottom');
-                    }else{
+                    } else {
                         $('#nav_post').removeClass('goToBottom');
                         //$('#nav_post > div').removeClass('goToBottom');
                     }
@@ -39,10 +39,10 @@ Template.post_detail.viewmodel({
             })
         }
     },
-    control : function(){
+    control: function () {
         return {
-            previousUrl : this.previousUrl(),
-            nextUrl : this.previousUrl()
+            previousUrl: this.previousUrl(),
+            nextUrl: this.nextUrl()
         }
     },
     autorun: function () {
@@ -57,7 +57,7 @@ Template.post_detail.viewmodel({
 
             self.fb_postContent(undefined);
             self.fb_postComments(undefined);
-            Meteor.call('fb_fetchPost', postId , navigator.userAgent, function (error, result) {
+            Meteor.call('fb_fetchPost', postId, navigator.userAgent, function (error, result) {
                 if (error) console.error(error);
                 if (result) {
                     //console.info(result);
@@ -70,35 +70,39 @@ Template.post_detail.viewmodel({
 });
 
 /*Template.nav_control.viewmodel({
-    onCreated : function(){
-        console.log(this.data())
-    }
-})*/
+ onCreated : function(){
+ console.log(this.data())
+ }
+ })*/
 
 Template.post_comments.viewmodel({
-    onRendered : function(){
-        $(document).ready(function(){
-            $("#tbl_comments").treetable();
+    onRendered: function () {
+        $(document).ready(function () {
+            //$("#tbl_comments").treetable();
         })
     },
-    comments : function(){
+    comments: function () {
         var obj = this.templateInstance.data;
-        var _comments = new Mongo.Collection(null);
-        _.each(obj.data, function(i){
-            var parent_id = (i.parent) ? i.parent.id : null;
-            _comments.insert({
-                id : i.id,
-                parentId : parent_id,
-                name : i.from.name,
-                message : i.message,
-                created_time : i.created_time
-            });
+        //var _comments = new Mongo.Collection(null);
+        //console.log(obj.data);
+        var _items = [];
+        _.each(obj.data, function (i) {
+            var parent_id = (i.parent) ? i.parent.id : '';
+            var item = {
+                id: i.id,
+                parentId: parent_id,
+                name: i.from.name,
+                message: i.message,
+                created_time: i.created_time
+            };
+            _items.push(item)
+            //_comments.insert(item);
         })
-        var items = _comments.find({},{sort : {created_time : 1}}).fetch();
-        console.warn(builddata(items));
+        //console.warn(buildTreeOfComments(_items));
+        //var items = _comments.find().fetch();
         return {
-            count : (obj.summary.total_count) ? obj.summary.total_count : null,
-            items : items
+            count: (obj.summary.total_count) ? obj.summary.total_count : null,
+            items: buildTreeOfComments(_items)
         }
     }
 })
@@ -120,28 +124,33 @@ function buildPageUrl(currentPost, jjj) {
     return url;
 }
 
-var builddata = function (data) {
-    var source = [];
-    var items = [];
-    // build hierarchical source.
-    for (i = 0; i < data.length; i++) {
-        var item = data[i];
-        var label = item["message"];
-        var parentid = item["parentId"];
-        var id = item["id"];
-
-        if (items[parentid]) {
-            var item = { parentId: parentid, message: label, item: item };
-            if (!items[parentid].items) {
-                items[parentid].items = [];
-            }
-            items[parentid].items[items[parentid].items.length] = item;
-            items[id] = item;
+function buildTreeOfComments(items, parentId) {
+    var comments_tmp = [];
+    var parentId = parentId || '';
+    _.each(items, function (i) {
+        if (i.parentId === parentId) {
+            comments_tmp.push(i);
+            items = _.without(items, _.findWhere(items, {id: i.id}));
         }
-        else {
-            items[id] = { parentId: parentid, message: label, item: item };
-            source[id] = items[id];
-        }
+    });
+    if (comments_tmp && comments_tmp.length > 0) {
+        var tableClass = (parentId === '') ? '' : 'subTable';
+        var html = '<table class="table '+ tableClass+'">';
+            html += '<tbody>';
+        _.each(comments_tmp, function (i) {
+            html += '<tr>';
+            html += '<td style="padding: 5px !important;">';
+            html += '<p class="comment_item">';
+            html += '<b>'+ i.name+'</b> &nbsp; <span class="label label-default pull-right">'+ moment(i.created_time).format('DD/MM/YYYY HH:mm:ss') +'</span>'
+            html += '</p>'
+            html += '<p class="comment_item">'+ i.message.replace(/(?:\r\n|\r|\n)/g, '<br />') +'</p>'
+            html += buildTreeOfComments(items.reverse(), i.id);
+            html += '</td>';
+            html += '</tr>'
+        });
+        html += '</tbody>'
+        html += '</table>';
+        return html;
     }
-    return source;
+    return '';
 }
